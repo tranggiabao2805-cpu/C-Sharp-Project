@@ -1,0 +1,55 @@
+﻿@model List<FastFoodOnline.Models.Order>
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+}
+
+<h2>🧾 Đơn hàng của bạn</h2>
+
+@if (!Model.Any())
+{
+    <p>Bạn chưa đặt đơn hàng nào.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>🆔 Mã đơn</th>
+                <th>📅 Ngày đặt</th>
+                <th>🍔 Món ăn / Combo</th>
+                <th>💰 Tổng tiền</th>
+                <th>📌 Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <ul>
+                            @foreach (var item in order.OrderDetails)
+                            {
+                                if (item.FoodItem != null)
+                                {
+                                    <li>@item.FoodItem.Name x @item.Quantity</li>
+                                }
+                                else if (item.Combo != null)
+                                {
+                                    <li>Combo: @item.Combo.Name x @item.Quantity</li>
+                                }
+                                else
+                                {
+                                    <li>Không xác định x @item.Quantity</li>
+                                }
+                            }
+                        </ul>
+                    </td>
+                    <td>@order.TotalOrderAmount.ToString("N0") VNĐ</td>
+                    <td>@order.Status.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

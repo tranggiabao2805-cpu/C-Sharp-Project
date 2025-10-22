@@ -1,0 +1,51 @@
+﻿@model IEnumerable<FastFoodOnline.Models.Combo>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Combo món ăn";
+    bool isAdmin = false;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var roles = await UserManager.GetRolesAsync(user);
+        isAdmin = roles.Contains("Admin");
+    }
+}
+
+<h2 class="mb-4">Combo món ăn</h2>
+
+<div class="row">
+    @foreach (var combo in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card card-mgmt h-100">
+                <div class="card-header text-center">
+                    @combo.Name
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(combo.ImageUrl))
+                    {
+                        <div class="d-flex justify-content-center mb-3">
+                            <img src="@combo.ImageUrl" alt="@combo.Name" class="img-fluid rounded" style="height: 180px; object-fit: cover;" />
+                        </div>
+                    }
+
+                    <p>@combo.Description</p>
+                    <p><strong>Giá:</strong> @combo.Price.ToString("N0") USD</p>
+
+                    @if (!isAdmin)
+                    {
+                        <form asp-controller="Cart" asp-action="AddCombo" method="post">
+                            <input type="hidden" name="comboId" value="@combo.Id" />
+                            <button type="submit" class="btn btn-mgmt w-100">
+                                <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

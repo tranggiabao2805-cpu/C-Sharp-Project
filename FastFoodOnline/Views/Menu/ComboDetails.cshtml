@@ -1,0 +1,20 @@
+﻿@model IEnumerable<FastFoodOnline.Models.Combo>
+
+<h2>Combo ưu đãi</h2>
+
+<div class="row">
+@foreach (var combo in Model)
+{
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="@combo.ImageUrl" class="card-img-top" alt="@combo.Name" />
+                <div class="card-body">
+                    <h5 class="card-title">@combo.Name</h5>
+                    <p class="card-text">@combo.Description</p>
+                    <p><strong>@combo.Price.ToString("N0") đ</strong></p>
+                    <a asp-action="ComboDetails" asp-route-id="@combo.Id" class="btn btn-success">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+}
+    }

@@ -1,0 +1,108 @@
+﻿@using FastFoodOnline.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model IEnumerable<FastFoodOnline.Models.FoodItem>
+
+@{
+    ApplicationUser user = null;
+    IList<string> roles = new List<string>();
+    bool isAdmin = false;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        user = await UserManager.GetUserAsync(User);
+        roles = await UserManager.GetRolesAsync(user);
+        isAdmin = roles.Contains("Admin");
+    }
+}
+<h2>Thực đơn món ăn</h2>
+
+<div id="foodBanner" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="/images/banner1.jpg" class="d-block w-100" alt="Banner 1">
+        </div>
+        <div class="carousel-item">
+            <img src="/images/banner2.jpg" class="d-block w-100" alt="Banner 2">
+        </div>
+        <div class="carousel-item">
+            <img src="/images/banner3.jpg" class="d-block w-100" alt="Banner 3">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#foodBanner" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#foodBanner" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+<form method="get" asp-action="Food" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Tìm món ăn..." />
+        <button type="submit" class="btn btn-outline-primary">Tìm</button>
+    </div>
+</form>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <div class="d-flex justify-content-center mb-3">
+                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid rounded" style="height: 180px; object-fit: cover;" />
+                    </div>
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">@item.Description</p>
+                    <p><strong>@item.Price.ToString("N0") đ</strong></p>
+
+                    @if (user != null && !isAdmin)
+                    {
+                        <a asp-controller="Cart" asp-action="Add" asp-route-foodItemId="@item.Id" class="btn btn-success">
+                            Đặt hàng
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<style>
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease;
+        background-color: #fff; /* giống combo */
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+    .card-title {
+        font-weight: bold;
+        color: #d62828;
+        text-align: center;
+    }
+
+    .card-text {
+        font-size: 0.95rem;
+        color: #333;
+    }
+
+    .btn-success {
+        background-color: #f77f00;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        width: 100%;
+    }
+
+        .btn-success:hover {
+            background-color: #d65a00;
+        }
+</style>

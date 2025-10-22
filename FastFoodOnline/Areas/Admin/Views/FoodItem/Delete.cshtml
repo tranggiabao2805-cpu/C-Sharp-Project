@@ -1,0 +1,29 @@
+﻿@model FastFoodOnline.Models.FoodItem
+
+@{
+    ViewData["Title"] = "Xóa món ăn";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Bạn có chắc muốn xóa món ăn sau?</h4>
+<hr />
+
+<div class="mb-3">
+    <strong>Tên món:</strong> @Model.Name <br />
+    <strong>Mô tả:</strong> @Model.Description <br />
+    <strong>Giá:</strong> @Model.Price.ToString("N0") ₫ <br />
+    <strong>Danh mục:</strong> @Model.Category?.Name <br />
+    <strong>Trạng thái:</strong> @Model.Status <br />
+    <strong>Hình ảnh:</strong>
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" alt="@Model.Name" width="100" />
+    }
+</div>
+
+<form asp-action="DeleteConfirmed">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

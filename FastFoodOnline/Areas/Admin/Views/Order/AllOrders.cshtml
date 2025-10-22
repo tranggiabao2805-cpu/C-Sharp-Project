@@ -1,0 +1,84 @@
+﻿@model List<FastFoodOnline.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    var currentStatus = Context.Request.Query["status"].ToString();
+}
+
+<h2>📦 Danh sách đơn hàng</h2>
+
+<!-- 🔍 Form lọc theo trạng thái -->
+<form method="get" asp-action="AllOrders" class="mb-3">
+    <label for="status">📌 Lọc theo trạng thái:</label>
+    <select name="status" id="status" class="form-select form-select-sm w-auto d-inline-block" onchange="this.form.submit()">
+        <option value="" selected="@(string.IsNullOrEmpty(currentStatus) ? "selected" : null)">-- Tất cả --</option>
+        @foreach (var status in Enum.GetValues(typeof(FastFoodOnline.Models.OrderStatus)))
+        {
+            var s = status.ToString();
+            <option value="@s" selected="@(s == currentStatus ? "selected" : null)">@s</option>
+        }
+    </select>
+</form>
+
+<!-- 🧾 Bảng danh sách đơn hàng -->
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>🆔 Mã đơn</th>
+            <th style="width:150px;">👤 Người đặt</th>
+            <th>📅 Ngày đặt</th>
+            <th>🍔 Món ăn / Combo</th>
+            <th>💰 Tổng tiền</th>
+            <th>📌 Trạng thái</th>
+            <th>🔧 Cập nhật</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td style="width:150px;">
+                    @order.User.FullName (@order.User.Email)
+                </td>
+                <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <ul>
+                        @foreach (var item in order.OrderDetails)
+                        {
+                            if (item.FoodItem != null)
+                            {
+                                <li>@item.FoodItem.Name x @item.Quantity</li>
+                            }
+                            else if (item.Combo != null)
+                            {
+                                <li>Combo: @item.Combo.Name x @item.Quantity</li>
+                            }
+                            else
+                            {
+                                <li>Không xác định x @item.Quantity</li>
+                            }
+                        }
+                    </ul>
+                </td>
+                <td>@order.TotalOrderAmount.ToString("N0") VNĐ</td>
+                <td>@order.Status.ToString()</td>
+                <td>
+                    <form asp-area="Admin" asp-controller="Order" asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="orderId" value="@order.Id" />
+                        <select name="status" class="form-select form-select-sm">
+                            @{
+                                var selectedStatus = order.Status.ToString();
+                                foreach (var status in Enum.GetValues(typeof(FastFoodOnline.Models.OrderStatus)))
+                                {
+                                    var s = status.ToString();
+                                    <option value="@s" selected="@(s == selectedStatus ? "selected" : null)">@s</option>
+                                }
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary mt-1">Cập nhật</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

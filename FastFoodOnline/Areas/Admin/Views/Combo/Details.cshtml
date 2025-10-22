@@ -1,0 +1,15 @@
+﻿@model FastFoodOnline.Models.Combo
+@{
+    ViewBag.Title = "Chi tiết Combo";
+    Layout = "_AdminLayout";
+}
+<h1>@Model.Name</h1>
+<ul class="list-group">
+    @foreach (var ci in Model.ComboItems)
+    {
+        <li class="list-group-item">
+            @ci.FoodItem.Name (Số lượng: @ci.Quantity)
+        </li>
+    }
+</ul>
+<a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>

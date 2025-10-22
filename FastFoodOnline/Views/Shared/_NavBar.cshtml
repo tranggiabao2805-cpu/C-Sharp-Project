@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using FastFoodOnline.Models
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    var area = ViewContext.RouteData.Values["area"] as string;
+    bool isAdminArea = string.Equals(area, "Admin", StringComparison.OrdinalIgnoreCase);
+    bool isAdmin = false;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var roles = await UserManager.GetRolesAsync(user);
+        isAdmin = roles.Contains("Admin");
+    }
+}
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="~/images/logo.jpg" alt="FastFoodOnline" height="40" class="me-2" />
+            FastFoodOnline
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto">
+                @if (isAdmin)
+                {
+                    <!-- Menu quản trị -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="Index">Danh mục</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Combo" asp-action="Index">Combo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="AllOrders">Đơn hàng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">Người dùng</a>
+                    </li>
+                }
+                else
+                {
+                    <!-- Menu người dùng -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Menu" asp-action="Food">Thực đơn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Menu" asp-action="Combos">Combo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Order" asp-action="MyOrders">Đơn hàng</a>
+                    </li>
+                }
+
+                <!-- Đăng nhập / Đăng xuất -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-link nav-link">Đăng xuất <i class="fa-solid fa-right-from-bracket"></i></button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>

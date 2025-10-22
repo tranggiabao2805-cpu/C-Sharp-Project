@@ -1,0 +1,81 @@
+﻿@model List<CartItem>
+
+<h3 class="mb-4"><i class="fa-solid fa-cart-shopping me-2"></i> Giỏ hàng của bạn</h3>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Giỏ hàng của bạn đang trống. Hãy thêm món ăn để bắt đầu!</div>
+}
+else
+{
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Ảnh</th>
+                <th>Tên món</th>
+                <th style="width: 120px;">Số lượng</th>
+                <th>Giá</th>
+                <th>Tổng</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (item.FoodItem != null)
+                        {
+                            <img src="@item.FoodItem.ImageUrl" style="height:60px; border-radius:8px;" />
+                        }
+                        else if (item.Combo != null)
+                        {
+                            <img src="@item.Combo.ImageUrl" style="height:60px; border-radius:8px;" />
+                        }
+                    </td>
+                    <td>
+                        @if (item.FoodItem != null)
+                        {
+                            @item.FoodItem.Name
+                        }
+                        else if (item.Combo != null)
+                        {
+                            <strong>Combo:</strong> 
+                            @item.Combo.Name
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="Update" method="post" class="d-flex">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control form-control-sm me-2" />
+                        </form>
+                    </td>
+                    <td>@item.Price.ToString("N0") đ</td>
+                    <td>@((item.Price * item.Quantity).ToString("N0")) đ</td>
+                    <td>
+                        <a asp-action="Remove" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h4 class="text-danger">Tổng cộng: @Model.Sum(x => x.Price * x.Quantity).ToString("N0") đ</h4>
+        <form asp-action="Checkout" method="post">
+            <button type="submit" class="btn btn-success">Thanh toán</button>
+        </form>
+        <a asp-action="Clear" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-trash-can"></i> Xóa toàn bộ
+        </a>
+    </div>
+}
+<script>
+    document.querySelectorAll('input[name="quantity"]').forEach(input => {
+        input.addEventListener('change', function () {
+            this.form.submit();
+        });
+    });
+</script>

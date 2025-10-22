@@ -1,0 +1,16 @@
+﻿@model FastFoodOnline.Models.Category
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    ViewBag.Title = currentAction == "Create" ? "Tạo danh mục" : "Chỉnh sửa danh mục";
+    Layout = "_AdminLayout";
+}
+<h1>@ViewBag.Title</h1>
+<form asp-action="@currentAction" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

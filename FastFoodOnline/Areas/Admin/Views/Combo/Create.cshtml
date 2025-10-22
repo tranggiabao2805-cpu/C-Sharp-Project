@@ -1,0 +1,67 @@
+﻿@model FastFoodOnline.ViewModels.Admin.ComboCreateViewModel
+@using FastFoodOnline.Models
+
+<h2>Tạo Combo mới</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Tên combo</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Mô tả</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Giá combo</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Ảnh (URL)</label>
+        <input asp-for="ImageUrl" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Trạng thái</label>
+        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<FastFoodOnline.Models.Combo.ComboStatus>()"></select>
+    </div>
+
+    <h4>Chọn món ăn</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Chọn</th>
+                <th>Tên món</th>
+                <th>Số lượng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" asp-for="Items[@i].Selected" />
+                        <input type="hidden" asp-for="Items[@i].FoodItemId" />
+                        <input type="hidden" asp-for="Items[@i].Name" />
+                    </td>
+                    <td>@Model.Items[i].Name</td>
+                    <td>
+                        <input asp-for="Items[@i].Quantity" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Tạo combo</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

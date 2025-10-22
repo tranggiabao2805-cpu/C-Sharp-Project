@@ -1,0 +1,60 @@
+﻿@model IEnumerable<FastFoodOnline.Models.Combo>
+@using FastFoodOnline.Models
+
+@{
+    ViewData["Title"] = "Danh sách Combo";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Tạo Combo mới</a>
+
+<table class="table table-hover table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Ảnh</th>
+            <th>Tên Combo</th>
+            <th>Mô tả</th>
+            <th>Giá</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var combo in Model)
+        {
+            <tr>
+                <td style="width: 120px;">
+                    @if (!string.IsNullOrEmpty(combo.ImageUrl))
+                    {
+                        <img src="@combo.ImageUrl" alt="@combo.Name" class="img-thumbnail" style="max-width: 100px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Không có ảnh</span>
+                    }
+                </td>
+                <td><strong>@combo.Name</strong></td>
+                <td>@combo.Description</td>
+                <td>@combo.Price.ToString("N0") đ</td>
+                <td>
+                    @if (combo.Status == Combo.ComboStatus.Active)
+                    {
+                        <span class="">Đang hoạt động</span>
+                    }
+                    else
+                    {
+                        <span class="">Ngưng hoạt động</span>
+                    }
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Details" asp-route-id="@combo.Id" class="btn btn-info btn-sm">Chi tiết</a>
+                        <a asp-action="Edit" asp-route-id="@combo.Id" class="btn btn-warning btn-sm">Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@combo.Id" class="btn btn-danger btn-sm">Xóa</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

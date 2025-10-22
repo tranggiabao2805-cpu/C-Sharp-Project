@@ -1,0 +1,14 @@
+﻿@model FastFoodOnline.Models.Combo
+@{
+    ViewBag.Title = "Xác nhận xóa Combo";
+    Layout = "_AdminLayout";
+}
+<h1>@ViewBag.Title</h1>
+<div class="alert alert-danger">
+    Xóa Combo "<strong>@Model.Name</strong>"?
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

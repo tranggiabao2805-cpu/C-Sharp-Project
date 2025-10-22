@@ -1,0 +1,9 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var area = "Admin";
+    ViewBag.Title = $"Admin - {ViewBag.Title}";
+}
+<div class="container mt-4">
+    @RenderBody()
+</div>
+@RenderSection("Scripts", required: false)
